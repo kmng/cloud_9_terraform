@@ -210,3 +210,15 @@ resource "aws_security_group_rule" "tcp_8080" {
   security_group_id = data.aws_security_group.cloud9_secgroup.id
 }
 
+resource "aws_dynamodb_table" "company_table" {
+  name        = "company_table-${var.stack_name}
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key       = "name"
+  attribute {
+    name = "name"
+    type = "S"
+  }
+  tags = {
+    Terraform = "true"
+  }
+}
