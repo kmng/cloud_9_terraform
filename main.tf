@@ -229,3 +229,33 @@ data "archive_file" "lambda_code" {
   output_path = "lambda-producer.zip"
 }
 
+resource "aws_iam_role" "lambda_producer_function" {
+  name = "ProducerFunctionRole"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_role_policy_attachment" "basic" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_producer_function.name
+}
+
+
+resource "aws_lambda_function" "lambda_producer_function" {
+  filename      = "lambda-producer.zip"
+  function_name = "PipelineNotificationFunction"
+  role          = aws_iam_role.lambda_producer_function.arn
+  handler       = "app.handler"
+  runtime = "nodejs18.x"
+}

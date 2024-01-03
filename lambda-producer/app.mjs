@@ -16,7 +16,7 @@ const dynamodb = new ​AWS.DynamoDB.DocumentClient();
 
 
 
-export const lambdaHandler = async (event, context) => {
+exports.handler = async (event, context) => {
     try {
         return {
             'statusCode': 200,
