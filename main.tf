@@ -254,8 +254,8 @@ resource "aws_iam_role_policy_attachment" "basic" {
 
 resource "aws_lambda_function" "lambda_producer_function" {
   filename      = "lambda-producer.zip"
-  function_name = "PipelineNotificationFunction"
+  function_name = "LambdaProducerFunction"
   role          = aws_iam_role.lambda_producer_function.arn
-  handler       = "app.handler"
-  runtime = "nodejs18.x"
+  handler       = "index.handler"
+  runtime = "nodejs14.x"
 }
