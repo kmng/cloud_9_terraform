@@ -223,6 +223,7 @@ resource "aws_dynamodb_table" "company_table" {
   }
 }
 
+
 data "archive_file" "lambda_code" {
   type        = "zip"
   source_dir = "lambda-producer"
@@ -272,6 +273,16 @@ resource "aws_iam_role_policy_attachment" "dynamodb_table_policy_attachment" {
   role       = aws_iam_role.lambda_producer_function.name
 }
 
+resource "aws_sqs_queue" "producer_queue" {
+  name                       = "producer_queue-${var.stack_name}"
+  delay_seconds              = 10
+  max_message_size           = 2048
+  message_retention_seconds  = 86400
+  receive_wait_time_seconds  = 2
+    tags = {
+    Terraform = "true"
+  }
+}
 
 resource "aws_lambda_function" "lambda_producer_function" {
   filename      = "lambda-producer.zip"
@@ -282,6 +293,8 @@ resource "aws_lambda_function" "lambda_producer_function" {
   environment {
     variables = {
       TABLE_NAME = "company_table-${var.stack_name}"
+      QUEUE_NAME = "producer_queue-${var.stack_name}"
     }
   }
 }
+
