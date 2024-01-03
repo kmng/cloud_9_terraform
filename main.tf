@@ -222,3 +222,10 @@ resource "aws_dynamodb_table" "company_table" {
     Terraform = "true"
   }
 }
+
+data "archive_file" "lambda_code" {
+  type        = "zip"
+  source_dir = "lambda-producer"
+  output_path = "lambda-producer.zip"
+}
+
