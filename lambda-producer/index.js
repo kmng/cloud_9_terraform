@@ -18,6 +18,15 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
     try {
+
+        const tableName = process.env.TABLE_NAME;
+        const params = { TableName: tableName };
+
+        const data = await dynamodb.scan(params).promise();
+        for (const item of data.Items) {
+            console.log(item);
+        }
+
         return {
             'statusCode': 200,
             'body': JSON.stringify({

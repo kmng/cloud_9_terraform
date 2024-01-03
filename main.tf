@@ -252,10 +252,36 @@ resource "aws_iam_role_policy_attachment" "basic" {
 }
 
 
+resource "aws_iam_policy" "dynamodb_table_policy" {
+  name        = "Dynamodb_Read_Policy"
+  description = "Policy for scan Dynamodb Table"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action   = ["dynamodb:*"],
+        Effect   = "Allow",
+        Resource = ["*"]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "dynamodb_table_policy_attachment" {
+  policy_arn = aws_iam_policy.dynamodb_table_policy.arn
+  role       = aws_iam_role.lambda_producer_function.name
+}
+
+
 resource "aws_lambda_function" "lambda_producer_function" {
   filename      = "lambda-producer.zip"
   function_name = "LambdaProducerFunction"
   role          = aws_iam_role.lambda_producer_function.arn
   handler       = "index.handler"
   runtime = "nodejs14.x"
+  environment {
+    variables = {
+      TABLE_NAME = "company_table-${var.stack_name}"
+    }
+  }
 }
