@@ -305,6 +305,8 @@ resource "aws_iam_role_policy" "lambda_sqs_policy" {
   })
 }
 
+data "aws_caller_identity" "current" {}
+
 
 
 
@@ -318,6 +320,7 @@ resource "aws_lambda_function" "lambda_producer_function" {
     variables = {
       TABLE_NAME = "company_table-${var.stack_name}"
       QUEUE_NAME = "producer_queue-${var.stack_name}"
+      ACCOUNT_ID = data.aws_caller_identity.current.account_id
     }
   }
 }
