@@ -296,6 +296,7 @@ resource "aws_iam_role_policy" "lambda_sqs_policy" {
           "sqs:SendMessage",
           "sqs:ReceiveMessage",
           "sqs:DeleteMessage",
+          "sqs:GetQueueUrl"
         ]
         Effect   = "Allow"
         Resource = ["*"]

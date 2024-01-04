@@ -13,23 +13,36 @@
 
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 
+import  { SQSClient, GetQueueUrlCommand, SendMessageCommand } from "@aws-sdk/client-sqs";
+
 const dynamodb = new DynamoDBClient({ region: 'us-west-2' });
 
 
+const sqs = new SQSClient({ region: 'us-west-2' });
 
 
 
-exports.handler = async (event, context) => {
+
+
+export const handler =  async (event, context) => {
     try {
 
         const tableName = process.env.TABLE_NAME;
+        
+        const queueName = process.env.QUEUE_NAME;
 
         const params = { TableName: tableName };
 
         const data = await dynamodb.send(new ScanCommand(params));
 
         for (const item of data.Items) {
-            console.log(item);
+            console.log(item['name']['S']);
+            
+            const queueUrl = await getQueueUrl(queueName);
+            
+            console.log(queueUrl)
+            
+            
         }
 
         return {
@@ -43,3 +56,15 @@ exports.handler = async (event, context) => {
         return err;
     }
 };
+
+
+async function getQueueUrl(queueName) {
+    const params = {
+        QueueName: 'producer_queue-cloud_9',
+        QueueOwnerAWSAccountId: '006343592531'
+    };
+    
+    const command = new GetQueueUrlCommand(params);
+    const data = await  sqs.send(command);
+    return data.QueueUrl;
+}
