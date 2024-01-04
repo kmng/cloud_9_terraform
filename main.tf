@@ -226,7 +226,7 @@ resource "aws_dynamodb_table" "company_table" {
 
 data "archive_file" "lambda_code" {
   type        = "zip"
-  source_dir = "lambda-producer"
+  source_dir  = "lambda-producer"
   output_path = "lambda-producer.zip"
 }
 
@@ -274,12 +274,12 @@ resource "aws_iam_role_policy_attachment" "dynamodb_table_policy_attachment" {
 }
 
 resource "aws_sqs_queue" "producer_queue" {
-  name                       = "producer_queue-${var.stack_name}"
-  delay_seconds              = 10
-  max_message_size           = 2048
-  message_retention_seconds  = 86400
-  receive_wait_time_seconds  = 2
-    tags = {
+  name                      = "producer_queue-${var.stack_name}"
+  delay_seconds             = 10
+  max_message_size          = 2048
+  message_retention_seconds = 86400
+  receive_wait_time_seconds = 2
+  tags = {
     Terraform = "true"
   }
 }
@@ -296,7 +296,7 @@ resource "aws_iam_role_policy" "lambda_sqs_policy" {
           "sqs:ReceiveMessage",
           "sqs:DeleteMessage",
         ]
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = ["*"]
       },
     ]
@@ -314,7 +314,7 @@ resource "aws_lambda_function" "lambda_producer_function" {
   function_name = "LambdaProducerFunction"
   role          = aws_iam_role.lambda_producer_function.arn
   handler       = "index.handler"
-  runtime = "nodejs14.x"
+  runtime       = "nodejs14.x"
   environment {
     variables = {
       TABLE_NAME = "company_table-${var.stack_name}"
