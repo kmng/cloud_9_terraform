@@ -287,7 +287,7 @@ resource "aws_sqs_queue" "producer_queue" {
 
 resource "aws_iam_role_policy" "lambda_sqs_policy" {
   name = "lambda_sqs_policy"
-  role =  aws_iam_role.lambda_producer_function.name
+  role = aws_iam_role.lambda_producer_function.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
