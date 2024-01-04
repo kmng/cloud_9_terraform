@@ -11,8 +11,11 @@
  * 
  */
 
-const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
+
+const dynamodb = new DynamoDBClient({ region: 'us-west-2' });
+
+
 
 
 
@@ -20,9 +23,11 @@ exports.handler = async (event, context) => {
     try {
 
         const tableName = process.env.TABLE_NAME;
+
         const params = { TableName: tableName };
 
-        const data = await dynamodb.scan(params).promise();
+        const data = await dynamodb.send(new ScanCommand(params));
+
         for (const item of data.Items) {
             console.log(item);
         }

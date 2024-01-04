@@ -168,7 +168,7 @@ resource "aws_cloud9_environment_ec2" "cloud9_instance" {
   instance_type               = "t2.medium"
   automatic_stop_time_minutes = 30
   subnet_id                   = aws_subnet.public.id
-  image_id                    = "amazonlinux-1-x86_64"
+  image_id                    = "amazonlinux-2-x86_64"
   connection_type             = "CONNECT_SSM"
 
   tags = {
@@ -312,7 +312,7 @@ resource "aws_lambda_function" "lambda_producer_function" {
   function_name = "LambdaProducerFunction"
   role          = aws_iam_role.lambda_producer_function.arn
   handler       = "index.handler"
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs18.x"
   environment {
     variables = {
       TABLE_NAME = "company_table-${var.stack_name}"
